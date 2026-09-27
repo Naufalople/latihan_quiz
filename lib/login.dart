@@ -10,7 +10,7 @@ class Loginpage extends StatefulWidget {
 class _LoginpageState extends State<Loginpage> {
   final TextEditingController _usernameController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
-  bool _isLoading = false;
+  bool isloggedin = false;
 
   void _login() {
     String username = _usernameController.text;
@@ -18,7 +18,7 @@ class _LoginpageState extends State<Loginpage> {
 
     if (username == 'admin' && password == 'admin') {
       setState(() {
-        _isLoading = true;
+        isloggedin = true;
       });
     } else {
       ScaffoldMessenger.of(context).showSnackBar(
@@ -45,7 +45,7 @@ class _LoginpageState extends State<Loginpage> {
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              if (_isLoading) ...[
+              if (!isloggedin) ...[
                 Text('this is login page'),
                 SizedBox(height: 16),
                 _usernameField(_usernameController),

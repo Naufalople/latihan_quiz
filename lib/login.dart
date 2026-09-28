@@ -18,12 +18,14 @@ class _LoginpageState extends State<Loginpage> {
   User? loggedInUser;
 
   void _login() {
+    // 1. Mengambil nilai teks yang diketik pengguna dari TextEditingController
     String email = _emailController.text;
     String password = _passwordController.text;
 
     User? matchedUser;
 
     try {
+      // 2. Mencocokkan input dengan data 'users' yang berasal dari file data.dart
       matchedUser = users.firstWhere(
         (u) => u.email == email && u.password == password,
       );
@@ -32,6 +34,8 @@ class _LoginpageState extends State<Loginpage> {
     }
 
     if (matchedUser != null) {
+      // 3. Jika akun cocok, navigasi ke LibraryPage sambil mengirim data nama (matchedUser!.nama).
+      // Data nama ini nanti ditangkap oleh constructor di library.dart
       Navigator.pushReplacement(
         context,
         MaterialPageRoute(
@@ -39,6 +43,7 @@ class _LoginpageState extends State<Loginpage> {
         ),
       );
     } else {
+      // 4. Jika akun tidak cocok, aktifkan status isLoginFailed (border merah) dan tampilkan SnackBar
       setState(() {
         isLoginFailed = true;
       });

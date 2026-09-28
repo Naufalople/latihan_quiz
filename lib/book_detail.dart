@@ -3,17 +3,21 @@ import 'package:flutter/material.dart';
 import 'book.dart';
 
 class BookDetailPage extends StatelessWidget {
+  // 1. Variabel 'book' ini menerima 1 objek BookModel utuh yang dikirim dari library.dart
   const BookDetailPage({super.key, required this.book});
   final BookModel book;
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      // 2. Mengambil judul buku langsung dari objek 'book' di atas (sesuai poin C.1 kuis)
       appBar: AppBar(title: Text(book.title)),
       body: SingleChildScrollView(
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
+            // 3. Menampilkan cover buku dari properti book.imageUrl.
+            // Di halaman ini kita TIDAK PAKAI [index] lagi karena datanya sudah 1 objek buku tunggal
             Image.network(
               book.imageUrl,
               width: double.infinity,
@@ -35,6 +39,7 @@ class BookDetailPage extends StatelessWidget {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
+                  // 4. Seluruh informasi di bawah ini diambil langsung dari atribut objek 'book'
                   Text(
                     book.title,
                     style: const TextStyle(

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 
+import 'library.dart';
 import 'data.dart';
 
 class Loginpage extends StatefulWidget {
@@ -14,25 +15,48 @@ class _LoginpageState extends State<Loginpage> {
   final TextEditingController _passwordController = TextEditingController();
   bool isloggedin = false;
   bool isLoginFailed = false;
+  User? loggedInUser;
 
   void _login() {
     String email = _emailController.text;
     String password = _passwordController.text;
 
-    if (email == user1.email && password == user1.password) {
-      setState(() {
-        isloggedin = true;
-        isLoginFailed = false;
-      });
+    User? matchedUser;
+
+    try {
+      matchedUser = users.firstWhere(
+        (u) => u.email == email && u.password == password,
+      );
+    } catch (_) {
+      matchedUser = null;
+    }
+
+    if (matchedUser != null) {
+      Navigator.pushReplacement(
+        context,
+        MaterialPageRoute(
+          builder: (context) => LibraryPage(nama: matchedUser!.nama),
+        ),
+      );
     } else {
       setState(() {
-        isloggedin = false;
         isLoginFailed = true;
       });
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('login gagal: email atau password salah')),
+        const SnackBar(
+          content: Text('Login Gagal: Username atau Password salah'),
+          backgroundColor: Colors.red,
+        ),
       );
     }
+  }
+
+  void _logout() {
+    setState(() {
+      isloggedin = false;
+      _emailController.clear();
+      _passwordController.clear();
+    });
   }
 
   @override
@@ -67,10 +91,9 @@ class _LoginpageState extends State<Loginpage> {
                   child: Text('login'),
                 ),
               ] else ...[
-                Text('halo, ${user1.nama}'),
+                Text("Halo!"),
                 SizedBox(height: 20),
-                Text('Email kamu: ${user1.email}'),
-                Text('Password kamu: ${user1.password}'),
+                ElevatedButton(onPressed: _logout, child: Icon(Icons.logout)),
               ],
             ],
           ),
@@ -81,59 +104,71 @@ class _LoginpageState extends State<Loginpage> {
 }
 
 Widget _emailField(TextEditingController controller, bool isLoginFailed) {
-  return Container(
-    padding: EdgeInsets.symmetric(horizontal: 20, vertical: 10),
-    child: TextField(
-      controller: controller,
-      enabled: true,
-      decoration: InputDecoration(
-        hintText: 'email',
-        contentPadding: EdgeInsets.all(8.0),
-        border: OutlineInputBorder(
-          borderRadius: BorderRadius.all(Radius.circular(8.0)),
-          borderSide: BorderSide(
-            color: isLoginFailed ? Colors.red : Colors.blue,
-          ),
-        ),
-
-        enabledBorder: OutlineInputBorder(
-          borderRadius: BorderRadius.all(Radius.circular(8.0)),
-          borderSide: BorderSide(
-            color: isLoginFailed ? Colors.red : Colors.blue,
-            width: 2,
-          ),
-        ),
-      ),
-    ),
+  return _inputField(
+    controller: controller,
+    hint: "email",
+    isLoginFailed: isLoginFailed,
   );
+
+  // return Container(
+  //   padding: EdgeInsets.symmetric(horizontal: 20, vertical: 10),
+  //   child: TextField(
+  //     controller: controller,
+  //     enabled: true,
+  //     decoration: InputDecoration(
+  //       hintText: 'email',
+  //       contentPadding: EdgeInsets.all(8.0),
+  //       border: OutlineInputBorder(
+  //         borderRadius: BorderRadius.all(Radius.circular(8.0)),
+  //         borderSide: BorderSide(
+  //           color: isLoginFailed ? Colors.red : Colors.blue,
+  //         ),
+  //       ),
+
+  //       enabledBorder: OutlineInputBorder(
+  //         borderRadius: BorderRadius.all(Radius.circular(8.0)),
+  //         borderSide: BorderSide(
+  //           color: isLoginFailed ? Colors.red : Colors.blue,
+  //           width: 2,
+  //         ),
+  //       ),
+  //     ),
+  //   ),
+  // );
 }
 
 Widget _passwordField(TextEditingController controller, bool isLoginFailed) {
-  return Container(
-    padding: EdgeInsets.symmetric(horizontal: 20, vertical: 10),
-    child: TextField(
-      controller: controller,
-      obscureText: true,
-      enabled: true,
-      decoration: InputDecoration(
-        hintText: 'password',
-        contentPadding: EdgeInsets.all(8.0),
-        border: OutlineInputBorder(
-          borderRadius: BorderRadius.all(Radius.circular(8.0)),
-          borderSide: BorderSide(
-            color: isLoginFailed ? Colors.red : Colors.blue,
-          ),
-        ),
-        enabledBorder: OutlineInputBorder(
-          borderRadius: BorderRadius.all(Radius.circular(8.0)),
-          borderSide: BorderSide(
-            color: isLoginFailed ? Colors.red : Colors.blue,
-            width: 2.0,
-          ),
-        ),
-      ),
-    ),
+  return _inputField(
+    controller: controller,
+    hint: "password",
+    isLoginFailed: isLoginFailed,
+    obscure: true,
   );
+  // return Container(
+  //   padding: EdgeInsets.symmetric(horizontal: 20, vertical: 10),
+  //   child: TextField(
+  //     controller: controller,
+  //     obscureText: true,
+  //     enabled: true,
+  //     decoration: InputDecoration(
+  //       hintText: 'password',
+  //       contentPadding: EdgeInsets.all(8.0),
+  //       border: OutlineInputBorder(
+  //         borderRadius: BorderRadius.all(Radius.circular(8.0)),
+  //         borderSide: BorderSide(
+  //           color: isLoginFailed ? Colors.red : Colors.blue,
+  //         ),
+  //       ),
+  //       enabledBorder: OutlineInputBorder(
+  //         borderRadius: BorderRadius.all(Radius.circular(8.0)),
+  //         borderSide: BorderSide(
+  //           color: isLoginFailed ? Colors.red : Colors.blue,
+  //           width: 2.0,
+  //         ),
+  //       ),
+  //     ),
+  //   ),
+  // );
 }
 
 Widget _inputField({
